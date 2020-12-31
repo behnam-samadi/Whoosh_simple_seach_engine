@@ -1,0 +1,10 @@
+*.txt
+Poems/
+Queries/
+small_index/
+*.pptx
+index_whoosh/
+*.pdf
+Poems_SE1/
+pylucene_source/
+
