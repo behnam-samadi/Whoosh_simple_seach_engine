@@ -27,9 +27,10 @@ for i in range(len(test_file_names)):
                 #print("normalize")
             normalizer = Normalizer()
             query = normalizer.normalize(query)
-        if "T"  in experiment:
+        #if "T"  in experiment:
             #print("tokenize")
-            query = word_tokenize(query)
+            #query = word_tokenize(query)
+            #query = " ".join(query)
         if "R" in experiment:
             stopwords = []
             with codecs.open("Stopwords/Stopwords.txt", 'r', "utf-8") as f:
@@ -45,7 +46,8 @@ for i in range(len(test_file_names)):
             print("chaged to")
             print(len(query_temp))
             query = query_temp
-    query = " ".join(query)
+            query = "".join(query)
+    
     results = SE.Search(query)
     pre,rec = precision_recall(results, Relevantdocs[i].split("\n")[0].split(" "))
     sum_precision += pre

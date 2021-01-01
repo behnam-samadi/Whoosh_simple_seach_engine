@@ -59,8 +59,13 @@ class SearchEngine:
     def Search(self,this_query):
         searcher = self.ix.searcher()
         og = qparser.OrGroup.factory(0.3)
+        #print("this_query")
+        #print(this_query)
         query = QueryParser("content", self.ix.schema, group = og).parse(this_query)
-        results = searcher.search(query, limit = 20)
+        #print("query")
+        #print(query)
+
+        results = searcher.search(query, limit = 10)
         print(results)
         list_of_results_files = []
         for result in results:
