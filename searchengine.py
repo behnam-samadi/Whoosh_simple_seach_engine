@@ -40,6 +40,7 @@ class SearchEngine:
                         stopwords.append(line.split('\n')[0])
                     #print("Remove StopWords")
                     file_content_temp = []
+                    file_content = file_content.split(" ")
                     for word in file_content:
                         if not word in stopwords:
                             file_content_temp.append(word)
@@ -58,14 +59,15 @@ class SearchEngine:
 
     def Search(self,this_query):
         searcher = self.ix.searcher()
-        og = qparser.OrGroup.factory(0.3)
+        #og = qparser.OrGroup.factory(0.9)
+        og = qparser.OrGroup
         #print("this_query")
         #print(this_query)
         query = QueryParser("content", self.ix.schema, group = og).parse(this_query)
         #print("query")
         #print(query)
 
-        results = searcher.search(query, limit = 10)
+        results = searcher.search(query, limit = 20)
         print(results)
         list_of_results_files = []
         for result in results:

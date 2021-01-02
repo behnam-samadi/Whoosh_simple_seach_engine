@@ -4,7 +4,7 @@ from pre_rec import precision_recall
 import codecs
 from hazm import *
 
-experiment = "N,T,R"
+experiment = ""
 SE = SearchEngine("./Poems","index_whoosh")
 SE.Create_Index(experiment)
 
@@ -38,15 +38,19 @@ for i in range(len(test_file_names)):
             for line in lines:
                 stopwords.append(line.split('\n')[0])
             #print("Remove StopWords")
+            query = query.split(" ")
+            #stopwords = stopwords.split(" ")
             query_temp = []
             for word in query:
                 if not word in stopwords:
                     query_temp.append(word)
+                else:
+                    print("word",word)
             print(len(query))
             print("chaged to")
             print(len(query_temp))
             query = query_temp
-            query = "".join(query)
+            query = " ".join(query)
     
     results = SE.Search(query)
     pre,rec = precision_recall(results, Relevantdocs[i].split("\n")[0].split(" "))
