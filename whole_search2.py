@@ -4,7 +4,7 @@ from pre_rec import precision_recall
 import codecs
 from hazm import *
 
-experiment = ""
+experiment = "R"
 SE = SearchEngine("./Poems","index_whoosh")
 SE.Create_Index(experiment)
 
@@ -51,6 +51,7 @@ for i in range(len(test_file_names)):
             print(len(query_temp))
             query = query_temp
             query = " ".join(query)
+
     
     results = SE.Search(query)
     pre,rec = precision_recall(results, Relevantdocs[i].split("\n")[0].split(" "))
