@@ -3,8 +3,12 @@ from  searchengine import *
 from pre_rec import precision_recall
 import codecs
 from hazm import *
+from parsivar import Normalizer as pNormalizer
+from parsivar import Tokenizer
+from parsivar import FindStems
 
-experiment = "H,R,N,T,L"
+
+experiment = "P,R,N,T,L"
 
 
 
@@ -39,6 +43,9 @@ for i in range(len(test_file_names)):
                     #print("normalize")
                 normalizer = Normalizer()
                 query = normalizer.normalize(query)
+            else:
+                my_normalizer = pNormalizer()
+                query = my_normalizer.normalize(query)
         if "S" in experiment:
             stemmer = Stemmer()
             stem_output = []
@@ -53,7 +60,14 @@ for i in range(len(test_file_names)):
                 for word in query.split(" "):
                     lem_output.append(lemmatizer.lemmatize(word))
                 lem_output = " ".join(lem_output)
-
+                query = lem_output
+            else:
+                my_stemmer = FindStems()
+                lem_output = []
+                for word in query.split(" "):
+                    lem_output.append(my_stemmer.convert_to_stem(word))
+                lem_output = " ".join(lem_output)
+                #print(lem_output)
                 query = lem_output
                     
 
@@ -63,8 +77,13 @@ for i in range(len(test_file_names)):
             #query = " ".join(query)
     
     results = SE.Search(query)
+    print(results)
     pre,rec = precision_recall(results, Relevantdocs[i].split("\n")[0].split(" "))
+    print(pre,rec)
     sum_precision += pre
     sum_recall += rec
 experiment_precision = sum_precision / len(test_file_names)
 experiment_recall = sum_recall / len(test_file_names)
+
+print(experiment_precision)
+print(experiment_recall)

@@ -5,6 +5,10 @@ from whoosh.qparser import QueryParser
 import whoosh.qparser as qparser
 import codecs
 from hazm import *
+from parsivar import Normalizer as pNormalizer
+from parsivar import Tokenizer
+from parsivar import FindStems
+
 
 class SearchEngine:
     def __init__(self, documents_adress, index_adress):
@@ -25,16 +29,23 @@ class SearchEngine:
                 print(float(i)/len(files))
             file = self.documents_adress+"/"+file
             with codecs.open(file, 'r', "utf-8") as f:
-                file_content = unicode(f.read().replace('\n', ' '))
+                file_content = (f.read().replace('\n', ' '))
                 if "N" in preprocess_order:
                     if "H" in preprocess_order:
                     #print("normalize")
                         normalizer = Normalizer()
                         file_content = normalizer.normalize(file_content)
+                    else:
+                        my_normalizer = pNormalizer()
+                        file_content = my_normalizer.normalize(file_content)
+
                 if "T"  in preprocess_order:
                     if "H" in preprocess_order:
                         #print("tokenize")
                         file_content = word_tokenize(file_content)
+                    else:
+                        my_tokenizer =  Tokenizer()
+                        file_content = my_tokenizer.tokenize_words(file_content)
                 if "S" in preprocess_order:
                     stemmer = Stemmer()
                     stem_output = []
@@ -51,9 +62,18 @@ class SearchEngine:
                         
                         #print(lem_output)
                         file_content = lem_output
+                    else:
+                        my_stemmer = FindStems()
+                        lem_output = []
+                        for word in file_content:
+                            lem_output.append(my_stemmer.convert_to_stem(word))
+                        lem_output = " ".join(lem_output)
+                        #print(lem_output)
+                        file_content = lem_output
 
 
-                self.writer.add_document(title=unicode("filename: " +file), path =unicode("path_to_file: "+file),content=file_content)
+
+                self.writer.add_document(title=("filename: " +file), path =("path_to_file: "+file),content=file_content)
         self.writer.commit()
         print("indexing has been finished")
 
@@ -77,7 +97,7 @@ class SearchEngine:
         for result in results:
             filename = result["path"]
             filename = filename.split('/')[-1]
-            list_of_results_files.append(filename.encode("utf-8"))
+            list_of_results_files.append(filename)
         return(list_of_results_files)
             
 
