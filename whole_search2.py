@@ -4,7 +4,7 @@ from pre_rec import precision_recall
 import codecs
 from hazm import *
 
-experiment = "R,N,T,L"
+experiment = "H,R,N,T,L"
 
 
 
@@ -35,9 +35,10 @@ for i in range(len(test_file_names)):
     with codecs.open(Queries_adress+file.split("\n")[0], 'r', "utf-8") as f:
         query = f.read().replace("\n", " ")
         if "N" in experiment:
-                #print("normalize")
-            normalizer = Normalizer()
-            query = normalizer.normalize(query)
+            if "H" in experiment:
+                    #print("normalize")
+                normalizer = Normalizer()
+                query = normalizer.normalize(query)
         if "S" in experiment:
             stemmer = Stemmer()
             stem_output = []
@@ -46,13 +47,14 @@ for i in range(len(test_file_names)):
             stem_output = " ".join(stem_output)
             query = stem_output
         if "L" in experiment:
-            lemmatizer = Lemmatizer()
-            lem_output = []
-            for word in query.split(" "):
-                lem_output.append(lemmatizer.lemmatize(word))
-            lem_output = " ".join(lem_output)
+            if "H" in experiment:
+                lemmatizer = Lemmatizer()
+                lem_output = []
+                for word in query.split(" "):
+                    lem_output.append(lemmatizer.lemmatize(word))
+                lem_output = " ".join(lem_output)
 
-            query = lem_output
+                query = lem_output
                     
 
             #if "T"  in experiment:

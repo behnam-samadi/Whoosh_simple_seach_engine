@@ -27,12 +27,14 @@ class SearchEngine:
             with codecs.open(file, 'r', "utf-8") as f:
                 file_content = unicode(f.read().replace('\n', ' '))
                 if "N" in preprocess_order:
+                    if "H" in preprocess_order:
                     #print("normalize")
-                    normalizer = Normalizer()
-                    file_content = normalizer.normalize(file_content)
+                        normalizer = Normalizer()
+                        file_content = normalizer.normalize(file_content)
                 if "T"  in preprocess_order:
-                    #print("tokenize")
-                    file_content = word_tokenize(file_content)
+                    if "H" in preprocess_order:
+                        #print("tokenize")
+                        file_content = word_tokenize(file_content)
                 if "S" in preprocess_order:
                     stemmer = Stemmer()
                     stem_output = []
@@ -41,13 +43,14 @@ class SearchEngine:
                     stem_output = " ".join(stem_output)
                     file_content = stem_output
                 if "L" in preprocess_order:
-                    lem_output = []
-                    for word in file_content:
-                        lem_output.append(lemmatizer.lemmatize(word))
-                    lem_output = " ".join(lem_output)
-                    
-                    #print(lem_output)
-                    file_content = lem_output
+                    if "H" in preprocess_order:
+                        lem_output = []
+                        for word in file_content:
+                            lem_output.append(lemmatizer.lemmatize(word))
+                        lem_output = " ".join(lem_output)
+                        
+                        #print(lem_output)
+                        file_content = lem_output
 
 
                 self.writer.add_document(title=unicode("filename: " +file), path =unicode("path_to_file: "+file),content=file_content)
