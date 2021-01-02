@@ -15,6 +15,7 @@ class SearchEngine:
         self.writer = self.ix.writer()
 
     def Create_Index(self, preprocess):
+        lemmatizer = Lemmatizer()
         preprocess_order = preprocess.split(",")
         files = os.listdir(self.documents_adress)
         print(len(files))
@@ -25,7 +26,6 @@ class SearchEngine:
             file = self.documents_adress+"/"+file
             with codecs.open(file, 'r', "utf-8") as f:
                 file_content = unicode(f.read().replace('\n', ' '))
-                lemmatizer = Lemmatizer()
                 if "N" in preprocess_order:
                     #print("normalize")
                     normalizer = Normalizer()
@@ -45,6 +45,8 @@ class SearchEngine:
                     for word in file_content:
                         lem_output.append(lemmatizer.lemmatize(word))
                     lem_output = " ".join(lem_output)
+                    
+                    #print(lem_output)
                     file_content = lem_output
 
 
@@ -58,7 +60,11 @@ class SearchEngine:
         og = qparser.OrGroup
         #print("this_query")
         #print(this_query)
+        #print(this_query)
+
         query = QueryParser("content", self.ix.schema, group = og).parse(this_query)
+        #print(query)
+        #raise(False)
         #print("query")
         #print(query)
 

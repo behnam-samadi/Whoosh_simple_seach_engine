@@ -4,7 +4,7 @@ from pre_rec import precision_recall
 import codecs
 from hazm import *
 
-experiment = "R,N,T"
+experiment = "R,N,T,L"
 
 
 
@@ -48,9 +48,10 @@ for i in range(len(test_file_names)):
         if "L" in experiment:
             lemmatizer = Lemmatizer()
             lem_output = []
-            for word in query:
+            for word in query.split(" "):
                 lem_output.append(lemmatizer.lemmatize(word))
             lem_output = " ".join(lem_output)
+
             query = lem_output
                     
 
