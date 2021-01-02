@@ -4,8 +4,15 @@ from pre_rec import precision_recall
 import codecs
 from hazm import *
 
-experiment = "R"
-SE = SearchEngine("./Poems","index_whoosh")
+experiment = "R,N,T"
+
+
+
+
+if "R" in experiment.split(","):
+    SE = SearchEngine("./Poems_Remove","index_whoosh")
+else:
+    SE = SearchEngine("./Poems","index_whoosh")
 SE.Create_Index(experiment)
 
 
@@ -17,41 +24,40 @@ Relevantdocs = lines[1::3]
 
 sum_precision = 0
 sum_recall = 0
-
+if "R" in experiment:
+    Queries_adress = "Queries_Remove/"
+else:
+    Queries_adress = "Queries/"
 for i in range(len(test_file_names)):
     print("processing file "+str(i))
     file = test_file_names[i]
-    with codecs.open("Queries/"+file.split("\n")[0], 'r', "utf-8") as f:
+
+    with codecs.open(Queries_adress+file.split("\n")[0], 'r', "utf-8") as f:
         query = f.read().replace("\n", " ")
         if "N" in experiment:
                 #print("normalize")
             normalizer = Normalizer()
             query = normalizer.normalize(query)
-        #if "T"  in experiment:
+        if "S" in experiment:
+            stemmer = Stemmer()
+            stem_output = []
+            for word in query.split(" "):
+                stem_output.append(stemmer.stem(word))
+            stem_output = " ".join(stem_output)
+            query = stem_output
+        if "L" in experiment:
+            lemmatizer = Lemmatizer()
+            lem_output = []
+            for word in query:
+                lem_output.append(lemmatizer.lemmatize(word))
+            lem_output = " ".join(lem_output)
+            query = lem_output
+                    
+
+            #if "T"  in experiment:
             #print("tokenize")
             #query = word_tokenize(query)
             #query = " ".join(query)
-        if "R" in experiment:
-            stopwords = []
-            with codecs.open("Stopwords/Stopwords.txt", 'r', "utf-8") as f:
-                lines = f.readlines()
-            for line in lines:
-                stopwords.append(line.split('\n')[0])
-            #print("Remove StopWords")
-            query = query.split(" ")
-            #stopwords = stopwords.split(" ")
-            query_temp = []
-            for word in query:
-                if not word in stopwords:
-                    query_temp.append(word)
-                else:
-                    print("word",word)
-            print(len(query))
-            print("chaged to")
-            print(len(query_temp))
-            query = query_temp
-            query = " ".join(query)
-
     
     results = SE.Search(query)
     pre,rec = precision_recall(results, Relevantdocs[i].split("\n")[0].split(" "))

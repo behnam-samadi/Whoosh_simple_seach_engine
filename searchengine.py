@@ -25,6 +25,7 @@ class SearchEngine:
             file = self.documents_adress+"/"+file
             with codecs.open(file, 'r', "utf-8") as f:
                 file_content = unicode(f.read().replace('\n', ' '))
+                lemmatizer = Lemmatizer()
                 if "N" in preprocess_order:
                     #print("normalize")
                     normalizer = Normalizer()
@@ -32,25 +33,19 @@ class SearchEngine:
                 if "T"  in preprocess_order:
                     #print("tokenize")
                     file_content = word_tokenize(file_content)
-                if "R" in preprocess_order:
-                    stopwords = []
-                    with codecs.open("Stopwords/Stopwords.txt", 'r', "utf-8") as f:
-                        lines = f.readlines()
-                    for line in lines:
-                        stopwords.append(line.split('\n')[0])
-                    #print("Remove StopWords")
-                    file_content_temp = []
-                    file_content = file_content.split(" ")
+                if "S" in preprocess_order:
+                    stemmer = Stemmer()
+                    stem_output = []
                     for word in file_content:
-                        if not word in stopwords:
-                            file_content_temp.append(word)
-                    #print(file_content)
-                    #print("chaged to")
-                    #print(file_content_temp)
-                    file_content = file_content_temp
-
-
-
+                        stem_output.append(stemmer.stem(word))
+                    stem_output = " ".join(stem_output)
+                    file_content = stem_output
+                if "L" in preprocess_order:
+                    lem_output = []
+                    for word in file_content:
+                        lem_output.append(lemmatizer.lemmatize(word))
+                    lem_output = " ".join(lem_output)
+                    file_content = lem_output
 
 
                 self.writer.add_document(title=unicode("filename: " +file), path =unicode("path_to_file: "+file),content=file_content)
@@ -67,7 +62,7 @@ class SearchEngine:
         #print("query")
         #print(query)
 
-        results = searcher.search(query, limit = 20)
+        results = searcher.search(query, limit = 10)
         print(results)
         list_of_results_files = []
         for result in results:
