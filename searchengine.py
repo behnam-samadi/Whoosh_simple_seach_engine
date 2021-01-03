@@ -59,8 +59,6 @@ class SearchEngine:
                         for word in file_content:
                             lem_output.append(lemmatizer.lemmatize(word))
                         lem_output = " ".join(lem_output)
-                        
-                        #print(lem_output)
                         file_content = lem_output
                     else:
                         my_stemmer = FindStems()
@@ -68,7 +66,6 @@ class SearchEngine:
                         for word in file_content:
                             lem_output.append(my_stemmer.convert_to_stem(word))
                         lem_output = " ".join(lem_output)
-                        #print(lem_output)
                         file_content = lem_output
 
 
@@ -79,18 +76,8 @@ class SearchEngine:
 
     def Search(self,this_query):
         searcher = self.ix.searcher()
-        #og = qparser.OrGroup.factory(0.9)
         og = qparser.OrGroup
-        #print("this_query")
-        #print(this_query)
-        #print(this_query)
-
         query = QueryParser("content", self.ix.schema, group = og).parse(this_query)
-        #print(query)
-        #raise(False)
-        #print("query")
-        #print(query)
-
         results = searcher.search(query, limit = 10)
         print(results)
         list_of_results_files = []
@@ -99,8 +86,3 @@ class SearchEngine:
             filename = filename.split('/')[-1]
             list_of_results_files.append(filename)
         return(list_of_results_files)
-            
-
-
-
-
